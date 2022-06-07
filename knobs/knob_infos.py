@@ -29,6 +29,9 @@ class Knobs():
         # self.boolean_names = list(self.boolean)
         
     def get_statistics(self):
+        '''
+            get mean and standard deviation of each knob
+        '''
         self.mean = []
         self.std = []
         for k in self.continuous.keys():
@@ -57,7 +60,7 @@ class Knobs():
            
 spark = Knobs(continuous=spark_knobs.continuous_knobs,
               numeric_cat=spark_knobs.numeric_categorical_knobs,
-              string_cat=None,
+              string_cat=spark_knobs.string_categorical_knobs,
               )
 
 redis = Knobs(continuous=redis_knobs.continuous_knobs,
@@ -67,5 +70,5 @@ redis = Knobs(continuous=redis_knobs.continuous_knobs,
 
 rocksdb = Knobs(continuous=rocksdb_knobs.continuous_knobs,
               numeric_cat=rocksdb_knobs.numeric_categorical_knobs,
-              string_cat=rocksdb_knobs.string_categorical_knobs,
+              string_cat=None,
               )
