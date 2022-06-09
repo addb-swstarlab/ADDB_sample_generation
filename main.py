@@ -8,7 +8,8 @@ import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument('--size', type=int, default=10, help="Define sample size which is going to create")
 opt = parser.parse_args()
-CONF_PATH = 'configs/'
+MASTER_PATH = 'configs/master/'
+SLAVE_PATH = 'configs/slave/'
 
 def convert_outlier(x, dict_dbms, key):
     '''
@@ -28,30 +29,31 @@ def convert_outlier(x, dict_dbms, key):
         x = np.where(x > len(dict_dbms[key][0])-1, len(dict_dbms[key][0])-1, x)
     return x
 
-def write_knobs(f, selected_db, name, val):
+def write_knobs(selected_db, name, val):
     if name in selected_db.continuous_names:
-        f.writelines(f'{name} {val}\n')
+        knob_line = f'{name} {val}\n'
     if selected_db.numeric_cat_names is not None and name in selected_db.numeric_cat_names:
-        f.writelines(f'{name} {val}\n')
-#         f.writelines(f'{name} {selected_db.numeric_cat[name][0][val]}\n')
+        knob_line = f'{name} {val}\n'
     if selected_db.string_cat is not None and name in selected_db.string_cat_names:
-        f.writelines(f'{name} {selected_db.string_cat[name][0][val]}\n')
+        knob_line = f'{name} {selected_db.string_cat[name][0][val]}\n'
+    return knob_line
 
 def create_conf_file(CONF_FILE, addb_sample, addb, addb_name, addb_len):
     f = open(CONF_FILE, 'w')
-
+    file_inputs = []
+    cnt = 0
     for ld in range(len(addb)):
         selected_db = addb[ld]
-        f.writelines(f'[{addb_name[ld]}]\n')
+        file_inputs.append(f'[{addb_name[ld]}]\n')
         for i, name in enumerate(selected_db.knob_names):
             i += sum(addb_len[:ld])
             selected_db = addb[ld]
             val = int(addb_sample[i])
-            write_knobs(f, selected_db, name, val)
+            file_inputs.append(write_knobs(selected_db, name, val))
             if i == addb_len[ld]:
                 cnt += 1
-                f.writelines(f'[{addb_name[cnt]}]\n')
-        f.writelines('\n')
+        file_inputs.append('\n')
+    f.writelines(file_inputs[:-1])
     f.close()
     
 def generate_addb_samples(sample_num, addb, addb_name, addb_len):
@@ -86,12 +88,17 @@ def generate_addb_samples(sample_num, addb, addb_name, addb_len):
         
     for num, addb_sample in enumerate(addb_samples):
         CONF_NAME = f'addb_config{num}.conf'
-        create_conf_file(os.path.join(CONF_PATH, CONF_NAME), addb_sample, addb, addb_name, addb_len)
+        create_conf_file(os.path.join(MASTER_PATH, CONF_NAME), addb_sample[:addb_len[0]], addb[:1], addb_name[:1], addb_len[:1])
+        create_conf_file(os.path.join(SLAVE_PATH, CONF_NAME), addb_sample[addb_len[0]:], addb[1:], addb_name[1:], addb_len[1:])
         
 if __name__ == "__main__":
-    if os.path.isdir(CONF_PATH):
-        os.system(f'rm -rf {CONF_PATH}')
-    os.mkdir(CONF_PATH)
+    if os.path.isdir(MASTER_PATH):
+        os.system(f'rm -rf {MASTER_PATH}')
+    os.mkdir(MASTER_PATH)
+    
+    if os.path.isdir(SLAVE_PATH):
+        os.system(f'rm -rf {SLAVE_PATH}')
+    os.mkdir(SLAVE_PATH)
             
     sample_num = opt.size
     addb = [spark, redis, rocksdb]
