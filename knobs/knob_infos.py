@@ -50,12 +50,6 @@ class Knobs():
                 knob_range = range(len(self.string_cat[k][0]))
                 self.mean.append(np.mean(knob_range))
                 self.std.append(np.std(knob_range))
-                
-        # for k in self.boolean:
-        #     knob_range = [0, 1]
-        #     self.mean.append(np.mean(knob_range))
-        #     self.std.append(np.std(knob_range))
-            
         
            
 spark = Knobs(continuous=spark_knobs.continuous_knobs,
