@@ -14,8 +14,8 @@ continuous_knobs = {'max_background_compactions':[1, 16, 1],
                     'max_background_flushes':[1, 16, 1],
                     'max_write_buffer_number':[2, 8, 2],
                     'min_write_buffer_number_to_merge':[1, 3, 1],
-                    'compaction_pri':[0, 3, 0], # 0:kByCompensatedSize 1:kOldestLargestSeqFirst, 2:kOldestSmallestSeqFirst, 3:kMinOverlappingRatio
-                    'compaction_style':[0, 3, 0], # 0:kCompactionStyleLevel 1:kCompactionStyleUniversal, 2:kCompactionStyleFIFO, 3:kCompactionStyleNone
+#                     'compaction_pri':[0, 3, 0], # 0:kByCompensatedSize 1:kOldestLargestSeqFirst, 2:kOldestSmallestSeqFirst, 3:kMinOverlappingRatio
+#                     'compaction_style':[0, 3, 0], # 0:kCompactionStyleLevel 1:kCompactionStyleUniversal, 2:kCompactionStyleFIFO, 3:kCompactionStyleNone
                     'level0_file_num_compaction_trigger':[2, 8, 4],
                     'level0_slowdown_writes_trigger':[16, 32, 20],
                     'level0_stop_writes_trigger':[32, 64, 36],
@@ -29,10 +29,10 @@ numeric_categorical_knobs = {'write_buffer_size':[[s*KB for s in range(512, 2049
                              'max_bytes_for_level_base':[[s*MB for s in range(2, 9)], 4*MB],
                              'target_file_size_base':[[s*KB for s in range(512, 2049)], 1024*KB],
                              'block_size':[[s*KB for s in range(2, 17)], 4096],
-                             'memtable_bloom_size_ratio':[[0, 0.05, 0.1, 0.15, 0.2], 0], # 0, 0.05, 0.1, 0.15, 0.2
+#                              'memtable_bloom_size_ratio':[[0, 0.05, 0.1, 0.15, 0.2], 0], # 0, 0.05, 0.1, 0.15, 0.2
                              'max_open_files':[[-1, 10000, 100000, 1000000], -1],
                              # 'compression_ratio':[[s/100 for s in range(100)], 0.5], # 0.10 ~ 0.99, ex. 0.12,
-                             # 'cache_index_and_filter_blocks':[[0, 1], 0] 
+#                              'cache_index_and_filter_blocks':[[1, 0], 1] 
                             }
 
 # string_categorical_knobs = {'compression_type':[['snappy', 'zlib', 'lz4', 'none'], 'snappy'],
